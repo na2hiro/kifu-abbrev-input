@@ -28,7 +28,7 @@ const abbrev = (kind) => {
 function convert(input) {
     let isBlack = true;
     return input.replace(
-        /(\\?)(([1-9１-９])([1-9１-９])(x?)|(x))(FU?|KY|KE|GI?|KI|KA|HI?|OU?|TO?|NY|NK|NG|UM?|RY?)(([lrc]?)([ayh]?)([n+-]?)|(d?)) ?/gi,
+        /(\\?)(([1-9１-９])([1-9１-９])(x?)|(x))(FU?|KY|KE|GI?|KI|KA|HI?|OU?|TO?|NY|NK|NG|UM?|RY?)(([lrc]?)([ayh]?)([n+-]?)(d?)) ?/gi,
         (match, flip, _, x, y, same1, same2, kind, _2, lr, ayh, promote, da) => {
             if(!flip) isBlack = !isBlack;
             return (isBlack ? "☖" : "☗")+
@@ -36,6 +36,7 @@ function convert(input) {
                 (same1 || same2 ? "同" : "") +
                 kinds[kind.toUpperCase()] +
                 formatLrmhc(lr) +
+                formatAyh(ayh) +
                 formatPromote(promote) +
                 (da ? "打": "");
         });
@@ -59,7 +60,7 @@ function formatAyh(str) {
         case "a":
             return "上";
         case "y":
-            return "左";
+            return "寄";
         case "h":
             return "引";
         default:

@@ -1,0 +1,16 @@
+{
+  "name": "kifu-abbrev-input",
+  "version": "1.0.0",
+  "description": "Input Shogi Kifu in abbreviation",
+  "main": "index.js",
+  "scripts": {
+    "build": "tsc index.ts",
+    "build:watch": "tsc -w index.ts",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "na2hiro <a@81.la>",
+  "license": "ISC",
+  "dependencies": {
+    "typescript": "^4.1.3"
+  }
+}
