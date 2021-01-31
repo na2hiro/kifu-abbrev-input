@@ -1,9 +1,4 @@
-const output = document.getElementById("output");
-document.getElementById("input").addEventListener("input", (e) => {
-    output.textContent = convert((e.target as any).value);
-});
-
-const kinds = {
+const kinds: {[kind: string]: string} = {
     "FU":"歩",
     "KY":"香",
     "KE":"桂",
@@ -19,20 +14,25 @@ const kinds = {
     "UM":"馬",
     "RY":"竜",
 };
-const abbrev = (kind) => {
+const abbrev = (kind: string) => {
     kinds[kind.charAt(0)] = kinds[kind];
 }
 ["FU", "GI", "HI", "OU", "TO", "UM", "RY"].forEach(abbrev);
 
-// https://www.shogi.or.jp/faq/kihuhyouki.html
-function convert(input) {
+/**
+ * Convert all the abbreviations to proper kifu format within free text
+ * Refer https://www.shogi.or.jp/faq/kihuhyouki.html
+ * @param input
+ */
+export function convert(input: string): string {
     let isBlack = true;
     return input.replace(
         /(\\?)(([1-9１-９])([1-9１-９])(x?)|(x))(FU?|KY|KE|GI?|KI|KA|HI?|OU?|TO?|NY|NK|NG|UM?|RY?)(([lrc]?)([ayh]?)([n+-]?)(d?)) ?/gi,
-        (match, flip, _, x, y, same1, same2, kind, _2, lr, ayh, promote, da) => {
+        (match: string, flip: string, _: string, x: string, y: string, same1: string, same2: string, kind: string,
+         _2: string, lr: string, ayh: string, promote: string, da: string) => {
             if(!flip) isBlack = !isBlack;
             return (isBlack ? "☖" : "☗")+
-                (x ? ("１２３４５６７８９"[zenkaku2hankaku(x) - 1] + "一二三四五六七八九"[zenkaku2hankaku(y) - 1] ) : "") +
+                (x ? ("１２３４５６７８９"[+zenkaku2hankaku(x) - 1] + "一二三四五六七八九"[+zenkaku2hankaku(y) - 1] ) : "") +
                 (same1 || same2 ? "同" : "") +
                 kinds[kind.toUpperCase()] +
                 formatLrmhc(lr) +
@@ -42,7 +42,7 @@ function convert(input) {
         });
 }
 
-function formatLrmhc(str) {
+function formatLrmhc(str: string): string {
     switch (str.toLowerCase()) {
         case "l":
             return "左";
@@ -55,7 +55,7 @@ function formatLrmhc(str) {
     }
 }
 
-function formatAyh(str) {
+function formatAyh(str: string): string {
     switch (str.toLowerCase()) {
         case "a":
             return "上";
@@ -68,7 +68,7 @@ function formatAyh(str) {
     }
 }
 
-function formatPromote(str) {
+function formatPromote(str: string): string {
     switch (str.toLowerCase()) {
         case "n":
         case "+":
@@ -80,10 +80,16 @@ function formatPromote(str) {
     }
 }
 
-function zenkaku2hankaku(str) {
+function zenkaku2hankaku(str: string): string {
     return str.replace(/[Ａ-Ｚａ-ｚ０-９]/g, function(s) {
         return String.fromCharCode(s.charCodeAt(0) - 0xFEE0);
     });
 }
 
-output.textContent = convert((document.getElementById("input") as any).value);
+function main() {
+    const output = document.getElementById("output")!;
+    document.getElementById("input")!.addEventListener("input", (e) => {
+        output.textContent = convert((e.target as any).value);
+    });
+    output.textContent = convert((document.getElementById("input") as any).value);
+}
